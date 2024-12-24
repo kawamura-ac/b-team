@@ -20,7 +20,7 @@
      </center>
      <footer>
         
-        <a style="border: 2px solid black;" href="login.php">新規登録はこちらから</a>
+        <a style="border: 2px solid black;" href="Registration.php">新規登録はこちらから</a>
          
      </footer>  
     
