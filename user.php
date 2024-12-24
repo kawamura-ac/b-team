@@ -1,8 +1,6 @@
 
    <link rel="stylesheet" href="css.php"> 
    <?php
-    include "open_db.php";
-    
     $body =<<<___EOF___
 
     <header>
@@ -12,9 +10,9 @@
     <br>
     <br>
     <center>
-    <form method="POST">
-        <p>ニックネーム：<input type="text" name="title" required></p>
-        <p>メールアドレス：<input type="email" name="name" required></p>
+    <form method="POST" action="main.php">
+        <p>ニックネーム：<input type="text" name="name" required></p>
+        <p>メールアドレス：<input type="email" name="email" required></p>
         <p>パスワード：<input type="password" name="password" required></p>
         <br>
         <input type="submit" value="ログイン">
@@ -28,6 +26,10 @@
     
     ___EOF___;
 echo  $body;
+   
+  
+    
+    
 ?>
    
      
