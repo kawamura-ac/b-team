@@ -1,6 +1,7 @@
 <?php
 session_start();
 require 'db_config.php';
+ 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nickname = $_POST['nickname'];
