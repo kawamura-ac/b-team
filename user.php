@@ -18,10 +18,11 @@
         <input type="submit" value="ログイン">
      </form>
      </center>
+     <div class="divider"></div>
      <footer>
-        
-        <a style="border: 2px solid black;" href="Registration.php">新規登録はこちらから</a>
-         
+        <form action="Registration.php" method="GET">
+            <button type="submit">新規登録はこちらから</button>
+        </form>
      </footer>  
     
     ___EOF___;

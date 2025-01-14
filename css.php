@@ -23,8 +23,19 @@ h2{
 }
 footer{
     position: absolute;/*←絶対位置*/
-    bottom: 0;
+    bottom: 15;
+    
 
    
+}
+button{
+    
+
+   
+}
+.divider {
+            height: 1px;
+            background-color: black;
+            margin: 280px 0;
 }
 
