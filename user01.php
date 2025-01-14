@@ -1,7 +1,7 @@
 
    <link rel="stylesheet" href="css.php"> 
    <?php
-    include "open_db.php";
+    include "db_open.php";
     
     $body =<<<___EOF___
 
