@@ -1,5 +1,14 @@
 <link rel="stylesheet" href="css.php"> 
    <?php
+   if($_SERVER['REQUEST_METHOD'] === 'POST'){
+    $nickname = $_POST['nickname'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    $sql = "INSERT INTO users VALUE ('{$nickname}', '{$email}', '{$password}')";
+    $sql_res = $dbh->query( $sql );
+   }
+  
    
     
     $body =<<<___EOF___
@@ -12,7 +21,7 @@
     <br>
     <center>
     <form method="POST">
-        <p>ニックネーム：<input type="text" name="" required></p>
+        <p>ニックネーム：<input type="text" name="nickname" required></p>
         <p>メールアドレス：<input type="email" name="email" required></p>
         <p>パスワード：<input type="password" name="password" required></p>
         <br>
@@ -24,4 +33,4 @@
     ___EOF___;
 echo  $body;
 ?>
-   s
+   

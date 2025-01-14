@@ -1,6 +1,25 @@
 
    <link rel="stylesheet" href="css.php"> 
    <?php
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $email = $POST_['email']
+        $nickname = $_POST['nickname'];
+        $password = $_POST['password'];
+    
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE nickname = :nickname");
+        $stmt->execute(['nickname' => $nickname]);
+        $user = $stmt->fetch();
+    
+        if ($user && password_verify($password, $user['password'])) {
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['nickname'] = $user['nickname'];
+            header('Location: main.php');
+            exit();
+        } else {
+            $error = "Invalid nickname or password.";
+        }
+    }
+   
    
     $body =<<<___EOF___
 
@@ -12,7 +31,7 @@
     <br>
     <center>
     <form method="POST" action="main.php">
-        <p>ニックネーム：<input type="text" name="name" required></p>
+        <p>ニックネーム：<input type="text" name="nickname" required></p>
         <p>メールアドレス：<input type="email" name="email" required></p>
         <p>パスワード：<input type="password" name="password" required></p>
         <br>
@@ -27,7 +46,7 @@
      </footer>  
     
     ___EOF___;
-    
+
 echo  $body   
   
     
