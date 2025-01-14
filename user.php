@@ -26,8 +26,7 @@
      </footer>  
     
     ___EOF___;
-echo  $body;
-   
+echo  $body   
   
     
     
