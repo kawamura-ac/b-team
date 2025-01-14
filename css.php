@@ -24,7 +24,6 @@ h2{
 footer{
     position: absolute;/*←絶対位置*/
     bottom: 15;
-    
 }
 button{
     
