@@ -1,9 +1,10 @@
 <?php
-try {
-    $dbserver = "localhost"; // 로컬 개발 환경에서는 localhost
-    $dbname = "team_b"; // 데이터베이스 이름
-    $dbuser = "root"; // XAMPP 기본 사용자 이름
-    $dbpasswd = ""; // XAMPP 기본 비밀번호는 없음
+
+    $dbserver = "localhost";
+    # $dbserver = "mysql309.phy.lolipop.lan";
+    $dbname = "team_b";
+    $dbuser = "LAA1617854";
+    $dbpasswd = "dbpasswd";
 
     $opt = [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -11,12 +12,5 @@ try {
         PDO::MYSQL_ATTR_MULTI_STATEMENTS => false,
     ];
 
-    // PDO 연결 설정
-    $dbh = new PDO("mysql:host=$dbserver;dbname=$dbname;charset=utf8mb4", $dbuser, $dbpasswd, $opt);
-
-    echo "DB 연결 성공!"; // 연결 확인 메시지
-} catch (PDOException $e) {
-    die("DB 연결 실패: " . $e->getMessage());
-}
-?>
-
+    // PDO接続設定
+    $dbh = new PDO('mysql:host=' . $dbserver . ';dbname='.$dbname,$dbuser, $dbpasswd, $opt );
