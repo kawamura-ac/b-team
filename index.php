@@ -6,8 +6,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nickname = $_POST['nickname'];
     $password = $_POST['password'];
 
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE nickname = :nickname");
-    $stmt->execute(['nickname' => $nickname]);
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE user_name = :user_name");
+    $stmt->execute(['user_name' => $nickname]);
     $user = $stmt->fetch();
 
     if ($user && password_verify($password, $user['password'])) {

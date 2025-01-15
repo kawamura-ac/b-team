@@ -1,8 +1,9 @@
 <?php
-$host = 'localhost';
-$dbname = 'team_b';
-$username = 'LAA1617951';
-$password = 'mydbpasswd';
+$host = 'mysql309.phy.lolipop.lan';     
+$dbname = 'LAA1619960-mydb';
+$username = 'LAA1619960';          
+$password = '58315831';         
+
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);

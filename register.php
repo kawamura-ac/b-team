@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         try {
             // Check if the nickname or email already exists
-            $stmt = $pdo->prepare("SELECT * FROM users WHERE nickname = :nickname OR email = :email");
+            $stmt = $pdo->prepare("SELECT * FROM users WHERE user_name = :nickname OR user_email = :email");
             $stmt->execute(['nickname' => $nickname, 'email' => $email]);
             $existingUser = $stmt->fetch();
             if ($existingUser) {
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Hash the password
                 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
                 // Insert user into the database
-                $stmt = $pdo->prepare("INSERT INTO users (nickname, email, password) VALUES (:nickname, :email, :password)");
+                $stmt = $pdo->prepare("INSERT INTO users (nickname, email, password) VALUES (:user_name, :user_email, :user_paw)");
                 $result = $stmt->execute([
                     'nickname' => $nickname,
                     'email' => $email,
@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </body>
 </html>
 
-?>
+
 
 
 
