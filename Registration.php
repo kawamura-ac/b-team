@@ -1,7 +1,6 @@
 <link rel="stylesheet" href="css.php"> 
    <?php
    
-    
     $body =<<<___EOF___
 
     <header>
