@@ -1,9 +1,9 @@
 <?php
 session_start();
-require 'db_open.php';
+require ''; //데이터 베이스 이름 넣기
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: index1.php');
+    header('Location: index.php');
     exit();
 }
 
@@ -19,7 +19,7 @@ $posts = $stmt->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style1.css">
+    <link rel="stylesheet" href="style.css">
     <title>投稿者の記事</title>
 </head>
 <body>

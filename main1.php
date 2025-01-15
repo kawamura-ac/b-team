@@ -1,13 +1,12 @@
 <?php
 session_start();
-require 'db_open.php';
+require ''; //데이터 베이스 이름 넣기
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: index1.php');
     exit();
 }
 
-// Fetch all posts with author information
 $stmt = $pdo->prepare("
     SELECT posts.*, users.nickname 
     FROM posts 
@@ -27,7 +26,7 @@ $posts = $stmt->fetchAll();
     <title>投稿一覧</title>
 </head>
 <body>
-    <!--<div class="container">
+    <div class="container">
         <h2>投稿一覧</h2>
         <p>ログイン中のユーザー: <?php echo htmlspecialchars($_SESSION['nickname']); ?></p>
         <div class="actions">
@@ -50,6 +49,6 @@ $posts = $stmt->fetchAll();
         <?php else: ?>
             <p>投稿がまだありません。</p>
         <?php endif; ?>
-    </div>-->
+    </div>
 </body>
 </html>

@@ -1,5 +1,5 @@
 <?php
-require 'db_open.php';
+require ''; //데이터 베이스 이름 넣기
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $nickname = $_POST['nickname'];
@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style1.css">
+    <link rel="stylesheet" href="style.css">
     <title>登録</title>
 </head>
 <body>
