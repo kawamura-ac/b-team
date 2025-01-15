@@ -1,50 +1,9 @@
-<<<<<<< HEAD
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Main</title>
-    </head>
-    <body>
-    <?php
-        // データベース
-        include "db_open.php";
-
-        // Postsと Users データの呼び込み
-        $sql = "
-            SELECT 
-                Posts.post_id, 
-                Posts.post_title, 
-                Posts.post_date, 
-                Posts.post_content, 
-                Users.user_name 
-            FROM Posts JOIN Users        
-            ";
-
-        // SQL 実行
-        $sql_res = $dbh->query($sql);
-
-        // 結果出力
-        while ($rec = $sql_res->fetch(PDO::FETCH_ASSOC)) {
-            echo "<div>";
-            echo "<p>掲示番号: " . htmlspecialchars($rec['post_id']) . "</p>";
-            echo "<p>投稿名: " . htmlspecialchars($rec['user_name']) . "</p>";
-            echo "<p>タイトル: " . htmlspecialchars($rec['post_title']) . "</p>";
-            echo "<p>投稿日付: " . htmlspecialchars($rec['post_date']) . "</p>";
-            echo "<p>投稿内容: " . htmlspecialchars($rec['post_content']) . "</p>";
-            echo "</div><hr>";
-        }
-    ?>
-    </body>
-</html>
-
-=======
 <?php
 session_start();
-require 'db_config.php';
+require 'db_open.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: index.php');
+    header('Location: index1.php');
     exit();
 }
 
@@ -64,11 +23,11 @@ $posts = $stmt->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="style1.css">
     <title>投稿一覧</title>
 </head>
 <body>
-    <div class="container">
+    <!--<div class="container">
         <h2>投稿一覧</h2>
         <p>ログイン中のユーザー: <?php echo htmlspecialchars($_SESSION['nickname']); ?></p>
         <div class="actions">
@@ -91,7 +50,6 @@ $posts = $stmt->fetchAll();
         <?php else: ?>
             <p>投稿がまだありません。</p>
         <?php endif; ?>
-    </div>
+    </div>-->
 </body>
 </html>
->>>>>>> 0fe0e86d0dd450a32e9bc4f005d34158902c7acf
