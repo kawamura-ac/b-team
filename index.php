@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'db_open.php';
+require 'db_config.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nickname = $_POST['nickname'];
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="styles.css">
     <title>ログイン</title>
 </head>
 <body>
@@ -48,4 +48,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </body>
 </html>
-
