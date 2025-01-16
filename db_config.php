@@ -1,8 +1,8 @@
 <?php
-$host = 'mysql309.phy.lolipop.lan';     
-$dbname = 'LAA1619960-mydb';
-$username = 'LAA1619960';          
-$password = '58315831';         
+$host = "localhost";  // mysql309.phy.lolipop.lan
+$dbname = "team_b";
+$username = "LAA1617854";
+$password = "dbpasswd";         
 
 
 try {

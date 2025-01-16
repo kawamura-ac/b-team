@@ -1,19 +1,19 @@
 <?php
 session_start();
-include 'db_open.php';
- 
+require 'db_config.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nickname = $_POST['nickname'];
-    $password = $_POST['password'];
+    $nickname = $_POST['user_name'];    // 変数名以外のnicknameを全てuser_nameに変更
+    $password = $_POST['user_paw'];    // 変数名以外のpasswordを全てuser_pawに変更
 
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE nickname = :nickname");
-    $stmt->execute(['nickname' => $nickname]);
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE user_name = :user_name");
+    $stmt->execute(['user_name' => $nickname]);
     $user = $stmt->fetch();
 
-    if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['nickname'] = $user['nickname'];
+    // password_verify — パスワードがハッシュにマッチするかどうかを調べる
+    if ($user && password_verify($password, $user['user_paw'])) {  // データベースの user_pawをvarchar(255)にしないとハッシュ化されたパスワードが入らない
+        $_SESSION['user_id'] = $user['user_id'];
+        $_SESSION['user_name'] = $user['user_name'];
         header('Location: main.php');
         exit();
     } else {
@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
     <title>ログイン</title>
 </head>
 <body>
@@ -37,11 +37,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php if (!empty($error)): ?>
                 <p class="error"><?php echo $error; ?></p>
             <?php endif; ?>
-            <label for="nickname">ニックネーム</label>
-            <input type="text" name="nickname" id="nickname" required>
+            <label for="user_name">ニックネーム</label>
+            <input type="text" name="user_name" id="user_name" required>
             
-            <label for="password">パスワード</label>
-            <input type="password" name="password" id="password" required>
+            <label for="user_paw">パスワード</label>
+            <input type="password" name="user_paw" id="user_paw" required>
             
             <button type="submit">ログイン</button>
         </form>
