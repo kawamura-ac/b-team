@@ -3,16 +3,16 @@ session_start();
 require 'db_config.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nickname = $_POST['nickname'];
-    $password = $_POST['password'];
+    $nickname = $_POST['user_name'];
+    $password = $_POST['user_paw'];
 
     $stmt = $pdo->prepare("SELECT * FROM users WHERE user_name = :user_name");
     $stmt->execute(['user_name' => $nickname]);
     $user = $stmt->fetch();
 
-    if ($user && password_verify($password, $user['password'])) {
+    if ($user && password_verify($password, $user['user_paw'])) {
         $_SESSION['user_id'] = $user['id'];
-        $_SESSION['nickname'] = $user['nickname'];
+        $_SESSION['user_name'] = $user['user_name'];
         header('Location: main.php');
         exit();
     } else {
@@ -36,11 +36,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php if (!empty($error)): ?>
                 <p class="error"><?php echo $error; ?></p>
             <?php endif; ?>
-            <label for="nickname">ニックネーム</label>
-            <input type="text" name="nickname" id="nickname" required>
+            <label for="user_name">ニックネーム</label>
+            <input type="text" name="user_name" id="user_name" required>
             
-            <label for="password">パスワード</label>
-            <input type="password" name="password" id="password" required>
+            <label for="user_paw">パスワード</label>
+            <input type="password" name="user_paw" id="user_paw" required>
             
             <button type="submit">ログイン</button>
         </form>
