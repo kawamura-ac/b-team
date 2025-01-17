@@ -15,6 +15,21 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.post_container{
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 50px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+textarea{
+    resize: none;
+    width: 200px;
+    height: 100px;
+}
+
 h2 {
     text-align: center;
     margin-bottom: 20px;

@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'db_config.php';
+require ''; //데이터 베이스 이름 넣기
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: index.php');
