@@ -15,7 +15,7 @@ body {
 }
 
 .post_container{
-    max-width: 400px;
+    max-width: 800px;
     margin: 50px auto;
     padding: 50px;
     background: #fff;
@@ -100,3 +100,11 @@ button:hover {
 .button:hover {
     opacity: 0.9;
 }
+
+
+@media screen and (max-width: 480px) {
+    
+
+
+}
+
