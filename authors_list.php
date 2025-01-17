@@ -24,7 +24,7 @@ $users = $stmt->fetchAll();
 <body>
     <div class="container">
         <h2>投稿者一覧</h2>
-        <a href="index.php" class="button">戻る</a>
+        <a href="main.php" class="button">戻る</a>
         
         <!-- Display Registered Users -->
         <ul>
