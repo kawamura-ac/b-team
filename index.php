@@ -5,20 +5,20 @@ require 'db_config.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nickname = $_POST['user_name'];    // 変数名以外のnicknameを全てuser_nameに変更
     $password = $_POST['user_paw'];    // 変数名以外のpasswordを全てuser_pawに変更
-    $email = $_POST['user_email'];  // Added email validation
-
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE user_name = :user_name AND user_email = :user_email");
-    $stmt->execute(['user_name' => $nickname, 'user_email' => $email]);
-    $user = $stmt->fetch();
     
-        // password_verify — パスワードがハッシュにマッチするかどうかを調べる
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE user_name = :user_name");
+    $stmt->execute(['user_name' => $nickname]);
+    $user = $stmt->fetch();
+   
+
+    // password_verify — パスワードがハッシュにマッチするかどうかを調べる
         if ($user && password_verify($password, $user['user_paw'])) {  // データベースの user_pawをvarchar(255)にしないとハッシュ化されたパスワードが入らない
             $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['user_name'] = $user['user_name'];
             header('Location: main.php');
             exit();
         } else {
-            $error = "Invalid nickname or password or email.";
+            $error = "ニックネームまたはパスワードが間違っています";
         }
     }
 
@@ -41,15 +41,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endif; ?>
             
             <div id="nickname-error" style="color: red; display: none;">ニックネームは20文字以内で入力してください。</div>
-            <div id="email-error" style="color: red; display: none;">メールアドレスは30文字以内で入力してください。</div>
             <div id="password-error" style="color: red; display: none;">パスワードは20文字以内で入力してください。</div>
 
             <label for="user_name">ニックネーム</label>
             <input type="text" name="user_name" id="user_name" required>
 
-            <label for="user_email">メールアドレス</label>
-            <input type="email" name="user_email" id="user_email" required>
-            
             <label for="user_paw">パスワード</label>
             <input type="password" name="user_paw" id="user_paw" required>
             
@@ -83,11 +79,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
         } 
 
-        // メールアドレスの文字数制限チェック
-        if (emailInput.length > 30) {
-            emailError.style.display = "block";
-            isValid = false;
-        }
 
         // パスワードの文字数制限チェック
          if (passwdInput.length > 20) {
