@@ -1,44 +1,3 @@
-<<<<<<< HEAD
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Main</title>
-    </head>
-    <body>
-    <?php
-        // データベース
-        include "db_open.php";
-
-        // Postsと Users データの呼び込み
-        $sql = "
-            SELECT 
-                Posts.post_id, 
-                Posts.post_title, 
-                Posts.post_date, 
-                Posts.post_content, 
-                Users.user_name 
-            FROM Posts JOIN Users        
-            ";
-
-        // SQL 実行
-        $sql_res = $dbh->query($sql);
-
-        // 結果出力
-        while ($rec = $sql_res->fetch(PDO::FETCH_ASSOC)) {
-            echo "<div>";
-            echo "<p>掲示番号: " . htmlspecialchars($rec['post_id']) . "</p>";
-            echo "<p>投稿名: " . htmlspecialchars($rec['user_name']) . "</p>";
-            echo "<p>タイトル: " . htmlspecialchars($rec['post_title']) . "</p>";
-            echo "<p>投稿日付: " . htmlspecialchars($rec['post_date']) . "</p>";
-            echo "<p>投稿内容: " . htmlspecialchars($rec['post_content']) . "</p>";
-            echo "</div><hr>";
-        }
-    ?>
-    </body>
-</html>
-
-=======
 <?php
 session_start();
 require 'db_config.php';
@@ -49,11 +8,17 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 // Fetch all posts with author information
+// 変数名以外のnicknameを全てuser_nameに変更 
+// author_idを全てuser_idに変更
+// titleを全てpost_titleに変更
+// contentを全てpost_contentに変更
+// created_atを全てpost_dateに変更
+// 変数名以外のpasswordを全てuser_pawに変更
 $stmt = $pdo->prepare("
-    SELECT posts.*, users.nickname 
+    SELECT posts.*, user_name
     FROM posts 
-    JOIN users ON posts.author_id = users.id 
-    ORDER BY posts.created_at DESC
+    JOIN users ON posts.user_id = users.user_id 
+    ORDER BY posts.post_date DESC
 ");
 $stmt->execute();
 $posts = $stmt->fetchAll();
@@ -64,13 +29,13 @@ $posts = $stmt->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="styles.css">
     <title>投稿一覧</title>
 </head>
 <body>
     <div class="container">
         <h2>投稿一覧</h2>
-        <p>ログイン中のユーザー: <?php echo htmlspecialchars($_SESSION['nickname']); ?></p>
+        <p>ログイン中のユーザー: <?php echo htmlspecialchars($_SESSION['user_name']); ?></p>
         <div class="actions">
             <a href="create_post.php" class="button">新規投稿</a>
             <a href="logout.php" class="button logout">ログアウト</a>
@@ -79,13 +44,13 @@ $posts = $stmt->fetchAll();
             <?php foreach ($posts as $post): ?>
                 <div class="post">
                     <p><strong>投稿者:</strong> 
-                        <a href="posts_by_author.php?author_id=<?php echo $post['author_id']; ?>">
-                            <?php echo htmlspecialchars($post['nickname']); ?>
+                        <a href="posts_by_author.php?user_id=<?php echo $post['user_id']; ?>">
+                            <?php echo htmlspecialchars($post['user_name']); ?>
                         </a>
                     </p>
-                    <h3><?php echo htmlspecialchars($post['title']); ?></h3>
-                    <p><?php echo nl2br(htmlspecialchars($post['content'])); ?></p>
-                    <p><small>投稿日時: <?php echo $post['created_at']; ?></small></p>
+                    <h3><?php echo htmlspecialchars($post['post_title']); ?></h3>
+                    <p><?php echo nl2br(htmlspecialchars($post['post_content'])); ?></p>
+                    <p><small>投稿日時: <?php echo $post['post_date']; ?></small></p>
                 </div>
             <?php endforeach; ?>
         <?php else: ?>
@@ -94,4 +59,3 @@ $posts = $stmt->fetchAll();
     </div>
 </body>
 </html>
->>>>>>> 0fe0e86d0dd450a32e9bc4f005d34158902c7acf
