@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: main.php');
         exit();
     } else {
-        $error = "Invalid nickname or password.";
+        $error = "ニックネームまたはパスワードが違います。";
     }
 }
 ?>
