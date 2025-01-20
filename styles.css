@@ -101,3 +101,34 @@ button:hover {
 .button:hover {
     opacity: 0.9;
 }
+/* レスポンシブデザイン */
+@MEDIA SCREEN AND (MAX-WIDTH:600PX){
+    body{
+        flex-flow: column;
+    }
+    .container {
+        flex-flow: column;
+        padding: 50px;
+        padding-left: 20px;
+        padding-right: 27px;
+        margin: 30px;
+    }
+    .post{
+        flex-flow: column;
+        overflow-wrap: break-word;
+        width: 245px;
+    }
+    .post_container{
+        flex-flow: column;
+        padding: 50px;
+        margin: 30px;
+    }
+    button{
+        font-size: 11px;
+    }
+    .actions{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+} 
