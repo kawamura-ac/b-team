@@ -27,21 +27,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style1.css">
     <title>ログイン</title>
 </head>
 <body>
     <div class="container">
         <h2>ログイン</h2>
-        <form method="POST" onsubmit="return validateForm()">
+        <form method="POST">
             <?php if (!empty($error)): ?>
                 <p class="error"><?php echo $error; ?></p>
             <?php endif; ?>
-
-            <!-- div追加 -->
-            <div id="nickname-error" style="color: red; display: none;">ニックネームは20文字以内で入力してください。</div>
-            <div id="password-error" style="color: red; display: none;">パスワードは20文字以内で入力してください。</div>
-
             <label for="user_name">ニックネーム</label>
             <input type="text" name="user_name" id="user_name" required>
             
@@ -53,44 +48,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p>アカウントがありませんか？ <a href="register.php">登録する</a></p>
     </div>
 </body>
-
-<!-- 以下追加分 -->
-<script>
-    function validateForm() {
-        const nicknameInput = document.getElementById("user_name").value.trim();
-        const emailInput = document.getElementById("user_email").value.trim();
-        const passwdInput = document.getElementById("user_paw").value.trim();
-
-        const nicknameError = document.getElementById("nickname-error");
-        const emailError = document.getElementById("email-error");
-        const passwordError = document.getElementById("password-error");
-
-        // 初期化
-        nicknameError.style.display = "none";
-        emailError.style.display = "none";
-        passwordError.style.display = "none";
-
-        // 入力チェックフラグ
-        let isValid = true;
-
-        // ニックネームの文字数制限チェック
-        if (nicknameInput.length > 20) {
-            nicknameError.style.display = "block";
-            isValid = false;
-        } 
-
-
-        // パスワードの文字数制限チェック
-         if (passwdInput.length > 20) {
-            passwordError.style.display = "block";
-            isValid = false;
-        }
-
-        // 検証結果
-        if (isValid) {
-            alert("入力が確認されました");
-        }
-        return isValid; 
-    }
-</script>
 </html>

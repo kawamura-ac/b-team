@@ -1,6 +1,6 @@
 <?php
 session_start();
-require ''; //데이터 베이스 이름 넣기
+require 'db_config.php'; //データベース名を入れる
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: index.php');
@@ -27,6 +27,8 @@ $posts = $stmt->fetchAll();
 <body>
     <div class="container">
         <h2>投稿者ごとの記事一覧</h2>
+        <a href="authors_list.php" class="button">戻る</a>
+        <a href="main.php" class="button">メイン画面に戻る</a>
         <?php foreach ($posts as $post): ?>
             <div class="post">
                 <h3><?php echo htmlspecialchars($post['post_title']); ?></h3>
