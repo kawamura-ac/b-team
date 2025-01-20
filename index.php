@@ -5,13 +5,18 @@ require 'db_config.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nickname = $_POST['user_name'];    // 変数名以外のnicknameを全てuser_nameに変更
     $password = $_POST['user_paw'];    // 変数名以外のpasswordを全てuser_pawに変更
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> 79115efad03ad0e9c03841edd455196da25cce3e
     $stmt = $pdo->prepare("SELECT * FROM users WHERE user_name = :user_name");
     $stmt->execute(['user_name' => $nickname]);
     $user = $stmt->fetch();
    
 
     // password_verify — パスワードがハッシュにマッチするかどうかを調べる
+<<<<<<< HEAD
         if ($user && password_verify($password, $user['user_paw'])) {  // データベースの user_pawをvarchar(255)にしないとハッシュ化されたパスワードが入らない
             $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['user_name'] = $user['user_name'];
@@ -20,6 +25,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $error = "ニックネームまたはパスワードが間違っています";
         }
+=======
+    if ($user && password_verify($password, $user['user_paw'])) {  // データベースの user_pawをvarchar(255)にしないとハッシュ化されたパスワードが入らない
+        $_SESSION['user_id'] = $user['user_id'];
+        $_SESSION['user_name'] = $user['user_name'];
+        header('Location: main.php');
+        exit();
+    } else {
+        $error = "ニックネームまたはパスワードが違います。";
+>>>>>>> 79115efad03ad0e9c03841edd455196da25cce3e
     }
 
 ?>
@@ -39,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php if (!empty($error)): ?>
                 <p class="error"><?php echo $error; ?></p>
             <?php endif; ?>
+<<<<<<< HEAD
             
             <div id="nickname-error" style="color: red; display: none;">ニックネームは20文字以内で入力してください。</div>
             <div id="password-error" style="color: red; display: none;">パスワードは20文字以内で入力してください。</div>
@@ -46,6 +61,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label for="user_name">ニックネーム</label>
             <input type="text" name="user_name" id="user_name" required>
 
+=======
+
+            <!-- div追加 -->
+            <div id="nickname-error" style="color: red; display: none;">ニックネームは20文字以内で入力してください。</div>
+            <div id="password-error" style="color: red; display: none;">パスワードは20文字以内で入力してください。</div>
+
+            <label for="user_name">ニックネーム</label>
+            <input type="text" name="user_name" id="user_name" required>
+            
+>>>>>>> 79115efad03ad0e9c03841edd455196da25cce3e
             <label for="user_paw">パスワード</label>
             <input type="password" name="user_paw" id="user_paw" required>
             
@@ -54,6 +79,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p>アカウントがありませんか？ <a href="register.php">登録する</a></p>
     </div>
 </body>
+<<<<<<< HEAD
+=======
+
+<!-- 以下追加分 -->
+>>>>>>> 79115efad03ad0e9c03841edd455196da25cce3e
 <script>
     function validateForm() {
         const nicknameInput = document.getElementById("user_name").value.trim();
@@ -76,7 +106,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (nicknameInput.length > 20) {
             nicknameError.style.display = "block";
             isValid = false;
+<<<<<<< HEAD
             
+=======
+>>>>>>> 79115efad03ad0e9c03841edd455196da25cce3e
         } 
 
 
@@ -88,8 +121,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // 検証結果
         if (isValid) {
+<<<<<<< HEAD
             alert("入力が確認されました！");
+=======
+            alert("入力が確認されました");
+>>>>>>> 79115efad03ad0e9c03841edd455196da25cce3e
         }
         return isValid; 
     }
 </script>
+<<<<<<< HEAD
+=======
+</html>
+>>>>>>> 79115efad03ad0e9c03841edd455196da25cce3e

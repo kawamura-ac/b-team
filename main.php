@@ -38,6 +38,7 @@ $posts = $stmt->fetchAll();
         <p>ログイン中のユーザー: <?php echo htmlspecialchars($_SESSION['user_name']); ?></p>
         <div class="actions">
             <a href="create_post.php" class="button">新規投稿</a>
+            <a href="authors_list.php" class="button">投稿者一覧</a>
             <a href="logout.php" class="button logout">ログアウト</a>
         </div>
         <?php if (count($posts) > 0): ?>
