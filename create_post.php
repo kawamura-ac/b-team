@@ -42,11 +42,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endif; ?>
 
             <label for="post_title">タイトル</label>
-            <input type="text" name="post_title" id="post_title" required>
+            <!--placeholder - 文字制限の表示-->
+            <input type="text" name="post_title" id="post_title" placeholder="30字以内で入力してください" required>
 
             <div class="textarea">
             <label for="post_content">投稿内容</label>
-            <textarea name="post_content" id="post_content" required></textarea>
+            <textarea name="post_content" id="post_content" placeholder="500字以内で入力してください" required></textarea>
 
             <button type="submit">投稿</button>
         
@@ -54,5 +55,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="button" onclick="window.location.href='main.php';">メインに戻る</button></p>
         </form>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.querySelector("form");                 //要素の取得
+            const postTitle = document.getElementById("post_title");
+            const postContent = document.getElementById("post_content");
+            form.addEventListener("submit", (e) => {
+                const title = postTitle.value.trim();
+                const content = postContent.value.trim();
+                if (title === "" || content === "") { //空白と改行の場合に表示
+                    e.preventDefault();
+                    alert("タイトルと投稿内容を入力してください。（スペースや改行のみは無効です）"); //アラートで表示
+                }
+            });
+        });
+    </script>
 </body>
 </html>

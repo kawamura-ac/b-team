@@ -26,9 +26,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { // required
             $stmt = $pdo->prepare("SELECT * FROM users WHERE user_name = :user_name OR user_email = :user_email");
             $stmt->execute(['user_name' => $nickname, 'user_email' => $email]);
             $existingUser = $stmt->fetch();
-            if ($existingUser) {
-                $error = "このニックネームまたはメールアドレスは既に使用されています。";
-            } else {
+           if ($existingUser) {                                                   //dupllicate emails not allowing
+               if ($existingUser['user_email'] === $email) {
+                 $error = "このメールアドレスは既に使用されています。";
+        } elseif ($existingUser['user_name'] === $nickname) {
+                $error = "このニックネームは既に使用されています。";
+        }
+    }else {
                 // password_hash — パスワードハッシュを作る
                 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
                 // userをデータベースに挿入
@@ -82,6 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { // required
     </div>
 </body>
 </html>
+
 
 
 
