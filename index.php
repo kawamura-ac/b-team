@@ -53,44 +53,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p>アカウントがありませんか？ <a href="register.php">登録する</a></p>
     </div>
 </body>
-
-<!-- 以下追加分 -->
-<script>
-    function validateForm() {
-        const nicknameInput = document.getElementById("user_name").value.trim();
-        const emailInput = document.getElementById("user_email").value.trim();
-        const passwdInput = document.getElementById("user_paw").value.trim();
-
-        const nicknameError = document.getElementById("nickname-error");
-        const emailError = document.getElementById("email-error");
-        const passwordError = document.getElementById("password-error");
-
-        // 初期化
-        nicknameError.style.display = "none";
-        emailError.style.display = "none";
-        passwordError.style.display = "none";
-
-        // 入力チェックフラグ
-        let isValid = true;
-
-        // ニックネームの文字数制限チェック
-        if (nicknameInput.length > 20) {
-            nicknameError.style.display = "block";
-            isValid = false;
-        } 
-
-
-        // パスワードの文字数制限チェック
-         if (passwdInput.length > 20) {
-            passwordError.style.display = "block";
-            isValid = false;
-        }
-
-        // 検証結果
-        if (isValid) {
-            alert("入力が確認されました");
-        }
-        return isValid; 
-    }
-</script>
 </html>

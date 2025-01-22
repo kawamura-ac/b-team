@@ -1,20 +1,21 @@
 /* Shared styles for the entire project */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color: #F4F4F4;
     margin: 0;
     padding: 0;
 }
-
 .container {
     max-width: 800px;
-    margin: 50px auto;
     padding: 20px;
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+    margin-left: auto;
+    margin-right: auto;
+    width: auto;
 
+}
 .post_container{
     max-width: 400px;
     margin: 50px auto;
@@ -23,24 +24,20 @@ body {
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
 textarea{
     resize: none;
     width: 200px;
     height: 100px;
 }
-
 h2 {
     text-align: center;
     margin-bottom: 20px;
 }
-
 form label {
     display: block;
     margin: 10px 0 5px;
     font-weight: bold;
 }
-
 form input,
 form textarea {
     width: 100%;
@@ -49,7 +46,6 @@ form textarea {
     border: 1px solid #ccc;
     border-radius: 4px;
 }
-
 button {
     display: block;
     width: 100%;
@@ -58,77 +54,96 @@ button {
     color: #fff;
     border: none;
     border-radius: 4px;
-    font-size: 16px;
+    font-size: 10px;
     cursor: pointer;
 }
-
 button:hover {
-    background: #0056b3;
+    background: #0056B3;
 }
-
 .error {
     color: red;
     font-size: 14px;
     margin-bottom: 10px;
 }
-
 .post {
     border: 1px solid #ccc;
     padding: 15px;
     margin-bottom: 15px;
+    margin-top: 15px;
+
     border-radius: 4px;
-    background: #f9f9f9;
+    background: #F9F9F9;
 }
 .actions {
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
 }
-
 .button {
     text-decoration: none;
     color: white;
     background-color: #007BFF;
     padding: 10px 20px;
+    margin-bottom: 10px;
     border-radius: 4px;
     font-weight: bold;
 }
-
 .button.logout {
-    background-color: #dc3545;
+    background-color: #DC3545;
 }
-
 .button:hover {
     opacity: 0.9;
 }
-/* レスポンシブデザイン */
-@MEDIA SCREEN AND (MAX-WIDTH:600PX){
-    body{
-        flex-flow: column;
+
+@media screen and (max-width: 580px) {
+    body {
+        font-size: 10px;
+        padding: 0 10px;
     }
     .container {
-        flex-flow: column;
-        padding: 50px;
-        padding-left: 20px;
-        padding-right: 27px;
-        margin: 30px;
+        padding: 15px;
+        box-shadow: none;
+        border-radius: 0;
     }
-    .post{
-        flex-flow: column;
-        overflow-wrap: break-word;
-        width: 245px;
+    h2 {
+        font-size: 1.5em;
     }
-    .post_container{
-        flex-flow: column;
-        padding: 50px;
-        margin: 30px;
+    form label {
+        margin: 5px 0;
+        font-size: 1em;
     }
-    button{
-        font-size: 11px;
+    form input,
+    form textarea {
+        font-size: 1em;
     }
-    .actions{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+    button {
+        font-size: 1em;
+        padding: 8px;
     }
-} 
+    .actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .button {
+        text-align: center;
+        padding: 10px;
+        margin-bottom: 1em;
+    }
+    .post {
+        margin: 10px;
+        padding: 10px;
+    }
+    .post h3 {
+        font-size: 1.2em;
+    }
+    .post p {
+        font-size: 0.9em;
+    }
+    ul.authors-list li {
+        font-size: 1em;
+        padding: 8px;
+    }
+    ul.authors-list li a {
+        font-size: 1em;
+    }
+}
