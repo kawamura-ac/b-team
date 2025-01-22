@@ -2,42 +2,74 @@
 session_start();
 require 'db_config.php';
 
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit();
-}
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // フォームから投稿データを取得する
+    $post_title = $_POST['post_title'];
+    $post_content = $_POST['post_content'];
+    $user_id = $_SESSION['user_id'];
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $title = $_POST['title'];
-    $content = $_POST['content'];
-    $author_id = $_SESSION['user_id'];
+    // 文字列の長さの取得(全角文字も1文字と数える場合) mb_strlen( $val, "UTF-8");
+    if ( mb_strlen( $post_title, "UTF-8") > 30){
+        $error = "タイトルは30文字以内で入力してください。";
+    } else {
+        // post_date に現在の日時を指定して新しい投稿を挿入する
+        $stmt = $pdo->prepare("INSERT INTO posts (post_title, post_content, user_id, post_date) 
+                           VALUES (?, ?, ?, NOW())");           // prepare — SQL文の実行準備
+        $stmt->execute([$post_title, $post_content, $user_id]);     // execute — プリペアドステートメント（SQL文で値が変わる可能性がある箇所に対して、変数のように別の文字列を入れておき、後で置き換える仕組み）を実行する際に使われる関数
 
-    $stmt = $pdo->prepare("INSERT INTO posts (title, content, author_id) VALUES (:title, :content, :author_id)");
-    $stmt->execute(['title' => $title, 'content' => $content, 'author_id' => $author_id]);
-
-    header('Location: main.php');
-    exit();
+        // 挿入後に投稿リストにリダイレクトする
+        header('Location:main.php');
+        exit();
+    }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/styles.css">
-    <title>投稿を作成</title>
+    <link rel="stylesheet" href="styles.css">
+    <title>新規投稿</title>
 </head>
 <body>
-    <div class="container">
-        <h2>投稿を作成</h2>
+    <div class="post_container">
+        <h2>新規投稿</h2>
         <form action="create_post.php" method="POST">
-            <label for="title">タイトル</label>
-            <input type="text" name="title" id="title" required>
-            <label for="content">投稿内容</label>
-            <textarea name="content" id="content" required></textarea>
+            <?php if (!empty($error)): ?>
+                <p class="error"><?php echo htmlspecialchars($error); ?></p>
+            <?php endif; ?>
+
+            <label for="post_title">タイトル</label>
+            <input type="text" name="post_title" id="post_title"  required >
+
+            <div class="textarea">
+            <label for="post_content">投稿内容</label>
+            <textarea name="post_content" id="post_content" required></textarea>
+
             <button type="submit">投稿</button>
+        
+            <p style="padding-top:-10px;" border: 1px solid #ccc;>
+            <button type="button" onclick="window.location.href='main.php';">メインに戻る</button></p>
         </form>
     </div>
 </body>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const form = document.querySelector("form");                 //要素の取得
+        const postTitle = document.getElementById("post_title");     
+        const postContent = document.getElementById("post_content"); 
+
+        form.addEventListener("submit", (e) => {
+            const title = postTitle.value.trim();
+            const content = postContent.value.trim();
+            if (title === "" || content === "") { //空白と改行の場合に表示
+                e.preventDefault();
+                alert("タイトルと投稿内容を入力してください。（スペースや改行のみは無効です）"); //アラートで表示
+            } 
+        });
+    });
+</script>
+
 </html>
