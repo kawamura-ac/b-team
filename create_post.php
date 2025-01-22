@@ -8,42 +8,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $post_content = $_POST['post_content'];
     $user_id = $_SESSION['user_id'];
 
-    // post_date に現在の日時を指定して新しい投稿を挿入する
-    $stmt = $pdo->prepare("INSERT INTO Posts (post_title, post_content, user_id, post_date) 
-                           VALUES (?, ?, ?, NOW())");
-    $stmt->execute([$post_title, $post_content, $user_id]);
+    // 文字列の長さの取得(全角文字も1文字と数える場合) mb_strlen( $val, "UTF-8");
+    if ( mb_strlen( $post_title, "UTF-8") > 30){
+        $error = "タイトルは30文字以内で入力してください。";
+    } else {
+        // post_date に現在の日時を指定して新しい投稿を挿入する
+        $stmt = $pdo->prepare("INSERT INTO posts (post_title, post_content, user_id, post_date) 
+                           VALUES (?, ?, ?, NOW())");           // prepare — SQL文の実行準備
+        $stmt->execute([$post_title, $post_content, $user_id]);     // execute — プリペアドステートメント（SQL文で値が変わる可能性がある箇所に対して、変数のように別の文字列を入れておき、後で置き換える仕組み）を実行する際に使われる関数
 
-    // 挿入後に投稿リストにリダイレクトする
-    header('Location:main.php');
-    exit();
-}
-
-    $alert = ""; //タイトル文字制限
-
-    if(empty($title)){  //タイトル文字数の制限 
-       $alert="タイトルを入力してください。";
-    }else{
-        $title;
-        $titleLength = mb_strlen($title, 'UTF-8');
-        if($titleLength<2){
-            $alert = "タイトルは1文字以上の入力をする必要があります。";
-        }elseif($titleLength>30){
-            $alert = "タイトルは30文字以下の入力をする必要があります。";
-        }else{
-
-    $stmt = $pdo->prepare(
-        "INSERT INTO posts (post_title, post_content, user_id) 
-         VALUES (:post_title, :post_content, :user_id)");
-    $stmt->execute([
-        'post_title' => $title, 
-        'post_content' => $content, 
-        'user_id' => $author_id]);
-
-    header('Location: main.php');
-    exit();
+        // 挿入後に投稿リストにリダイレクトする
+        header('Location:main.php');
+        exit();
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="ja">
@@ -57,27 +37,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="post_container">
         <h2>新規投稿</h2>
         <form action="create_post.php" method="POST">
+            <?php if (!empty($error)): ?>
+                <p class="error"><?php echo htmlspecialchars($error); ?></p>
+            <?php endif; ?>
 
-        <!--タイトル文字制限のアラム-->
             <label for="post_title">タイトル</label>
-            <?php if(!empty($alert)):?> 
-                <p style="color:red; margin-top:-10px; margin-bottom:10px;">
-                    <?php echo htmlspecialchars($alert,ENT_QUOTES,'UTF-8');?>
-                </p>
-            <?php endif;?>
             <input type="text" name="post_title" id="post_title" required>
 
-        <!--テキストエリア-->
             <div class="textarea">
             <label for="post_content">投稿内容</label>
             <textarea name="post_content" id="post_content" required></textarea>
 
-        <!--ボタン-->
-                <button type="submit">投稿</button>
+            <button type="submit">投稿</button>
         
-        <!--メイン画面に戻る-->
-                <p style="padding-top:-10px;" border: 1px solid #ccc;>
-                <button type="button" onclick="window.location.href='main.php';">メインに戻る</button></p>
+            <p style="padding-top:-10px;" border: 1px solid #ccc;>
+            <button type="button" onclick="window.location.href='main.php';">メインに戻る</button></p>
         </form>
     </div>
 </body>
