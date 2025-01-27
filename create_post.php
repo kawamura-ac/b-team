@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="textarea">
             <label for="post_content">投稿内容</label>
-            <textarea name="post_content" id="post_content" placeholder="500字以内で入力してください" required></textarea>
+            <textarea name="post_content" id="post_content" maxlength="8192" placeholder="8192字以内で入力してください" required></textarea>
 
             <button type="submit">投稿</button>
         
