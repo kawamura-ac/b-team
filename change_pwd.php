@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
 <div class="container">
         <h2>パスワード変更</h2>
-        <form class="change_pwd" action="change_pwd.php" method="POST">
+        <form action="change_pwd.php" method="POST">
             <?php if (!empty($error)): ?>
                 <p class="error"><?php echo htmlspecialchars($error); ?></p>
             <?php endif; ?>
