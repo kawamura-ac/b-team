@@ -45,14 +45,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
     <title>パスワード変更</title>
+       <style>
+            input[type="password"] {
+            padding: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3.5px;
+            box-sizing: border-box;
+    	}
+</style>
 </head>
 <body>
 <div class="container">
         <h2>パスワード変更</h2>
-        <form action="change_pwd.php" method="POST">
+        <form class="change_pwd" action="change_pwd.php" method="POST">
             <?php if (!empty($error)): ?>
                 <p class="error"><?php echo htmlspecialchars($error); ?></p>
             <?php endif; ?>
+
             <label for="user_paw">現在のパスワード:</label>
             <input type="password" name="user_paw" id="user_paw" required>
 
@@ -69,5 +79,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </p>
         </form>
     </div>
+</style>
 </body>
 </html>
