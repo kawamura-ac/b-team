@@ -1,63 +1,89 @@
 <?php
 session_start();
 require 'db_config.php';
-if ($_SERVER['REQUEST_METHOD'] == 'POST') { // required
-    // 入力し送信されたname="user_name"とname="user_email"とname="user_paw"の値を取得する
-    // trim — 文字列の左右にある空白を削除  $変数 = trim(文字列[,削除する文字])
-    $nickname = trim($_POST['user_name']);   // 変数名以外のnicknameを全てuser_nameに変更した
-    $email = trim($_POST['user_email']);     // 変数名以外のemailを全てuser_emailに変更した
-    $password = $_POST['user_paw'];          // 変数名以外のpasswordを全てuser_pawに変更した
 
-    // フィールドが空欄かどうかの確認
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $nickname = trim($_POST['user_name']);
+    $email = trim($_POST['user_email']);
+    $password = $_POST['user_paw'];
+
+    // Check for errors
     if (empty($nickname) || empty($email) || empty($password)) {
         $error = "空欄があります。全てのフィールドを入力してください。";
-    // 文字列の長さの取得(全角文字も1文字と数える場合) mb_strlen( $val, "UTF-8");
-    } elseif ( mb_strlen( $nickname, "UTF-8") > 20){
+    } elseif (mb_strlen($nickname, "UTF-8") > 20) {
         $error = "ニックネームは20文字以内で入力してください。";
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {       // filter_var関数でメールアドレスをバリデーション
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "無効なメールアドレスです。";
-    } elseif ( mb_strlen( $email, "UTF-8") > 30){
+    } elseif (mb_strlen($email, "UTF-8") > 30) {
         $error = "メールアドレスは30文字以内で入力してください。";
-    } elseif ( mb_strlen( $password, "UTF-8") > 20){
+    } elseif (mb_strlen($password, "UTF-8") > 20) {
         $error = "パスワードは20文字以内で入力してください。";
     } else {
         try {
-            // user_nameまたはuser_emailが既に存在するかどうかの確認
+            // Check for duplicate user
             $stmt = $pdo->prepare("SELECT * FROM users WHERE user_name = :user_name OR user_email = :user_email");
             $stmt->execute(['user_name' => $nickname, 'user_email' => $email]);
             $existingUser = $stmt->fetch();
-           if ($existingUser) {                                                   //dupllicate emails not allowing
-               if ($existingUser['user_email'] === $email) {
-                 $error = "このメールアドレスは既に使用されています。";
-        } elseif ($existingUser['user_name'] === $nickname) {
-                $error = "このニックネームは既に使用されています。";
-        }
-    }else {
-                // password_hash — パスワードハッシュを作る
-                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-                // userをデータベースに挿入
-                $stmt = $pdo->prepare("INSERT INTO users (user_name, user_email, user_paw) VALUES (:user_name, :user_email, :user_paw)");
-                $result = $stmt->execute([
-                    'user_name' => $nickname,
-                    'user_email' => $email,
-                    'user_paw' => $hashedPassword
-                ]);
-                if ($result) {
-                    // 登録が完了するとログインページにリダイレクトされる
-                    header('Location: index.php');
-                    exit();
-                } else {
-                    $error = "登録に失敗しました。もう一度試してください。";
+
+            if ($existingUser) {
+                if ($existingUser['user_email'] === $email) {
+                    $error = "このメールアドレスは既に使用されています。";
+                } elseif ($existingUser['user_name'] === $nickname) {
+                    $error = "このニックネームは既に使用されています。";
+                }
+            } else {
+                // Handle image upload パス人によって異なる
+                $targetDir = $_SERVER['DOCUMENT_ROOT'] . '/kyoudou/uploads/';
+                $defaultImg = '/kyoudou/uploads/default.png'; // Default image
+                $imagePath = $defaultImg;
+
+                // Check if the file is uploaded
+                if (isset($_FILES['profile_pic']) && $_FILES['profile_pic']['error'] === UPLOAD_ERR_OK) {
+                    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                    $fileType = mime_content_type($_FILES['profile_pic']['tmp_name']);
+                    if (!in_array($fileType, $allowedTypes)) {
+                        $error = "無効なファイルタイプです。";
+                    } else {
+                        $imageName = uniqid() . '-' . basename($_FILES['profile_pic']['name']);
+                        $targetFile = $targetDir . $imageName;
+
+                        // Move the uploaded file
+                        if (move_uploaded_file($_FILES['profile_pic']['tmp_name'], $targetFile)) {
+                            // File successfully uploaded パス人によって異なる
+                            $imagePath = '/kyoudou/uploads/' . $imageName;
+                        } else {
+                            $error = "ファイルのアップロードに失敗しました。";
+                        }
+                    }
+                }
+                // If no errors, proceed with user registration
+                if (!isset($error)) {
+                    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                    $stmt = $pdo->prepare("INSERT INTO users (user_name, user_email, user_paw, user_img) 
+                                           VALUES (:user_name, :user_email, :user_paw, :user_img)");
+                    $result = $stmt->execute([
+                        'user_name' => $nickname,
+                        'user_email' => $email,
+                        'user_paw' => $hashedPassword,
+                        'user_img' => $imagePath
+                    ]);
+
+                    if ($result) {
+                        header('Location: index.php');
+                        exit();
+                    } else {
+                        $error = "登録に失敗しました。もう一度試してください。";
+                    }
                 }
             }
         } catch (Exception $e) {
-            // エラーをログに記録します (開発時のデバッグの場合はオプション)
             error_log("登録中のエラー: " . $e->getMessage());
             $error = "エラーが発生しました。もう一度試してください。";
         }
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -69,27 +95,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { // required
 <body>
     <div class="container">
         <h2>新規登録</h2>
-        <form action="register.php" method="POST">
+        <form action="register.php" method="POST" enctype="multipart/form-data">
             <?php if (!empty($error)): ?>
                 <p class="error"><?php echo htmlspecialchars($error); ?></p>
             <?php endif; ?>
             <label for="user_name">ニックネーム</label>
-            <!-- required属性 — 空欄のままボタンが押された場合、エラーメッセージを表示 -->
             <input type="text" name="user_name" id="user_name" required>
             <label for="user_email">メールアドレス</label>
             <input type="email" name="user_email" id="user_email" required>
             <label for="user_paw">パスワード</label>
             <input type="password" name="user_paw" id="user_paw" required>
+            <label for="profile_pic">プロフィール写真</label>
+            <input type="file" name="profile_pic" id="profile_pic" accept="image/*">
             <button type="submit">登録</button>
         </form>
         <p>アカウントをお持ちの方はこちら <a href="index.php">ログイン</a></p>
     </div>
 </body>
 </html>
-
-
-
-
 
 
 

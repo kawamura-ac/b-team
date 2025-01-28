@@ -46,6 +46,7 @@ form textarea {
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+
 button {
     display: block;
     width: 100%;
@@ -88,12 +89,121 @@ button:hover {
     border-radius: 4px;
     font-weight: bold;
 }
+ 
 .button.logout {
     background-color: #DC3545;
 }
 .button:hover {
     opacity: 0.9;
 }
+
+/* 村上さん */
+.form_button {
+    display: block;
+    width: 100%;
+    height: 80%;
+    margin-left: auto;
+    padding: 10px;
+    background: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 17px;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: none;
+}
+.update_button{
+    display: block;
+    width: auto;
+    margin-left: auto;
+    padding: 10px;
+    background: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 17px;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+/* ドゥミさん */
+.profile-picture {
+    width:100px !important;
+    height:100px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+     }
+
+/* Make sure images fit within the post */
+.post-image {
+    max-width: 700px;         /* Ensure the image is no wider than its container */
+    max-height: 700px;        /* Limit the height to prevent oversized images */
+    width: auto;              /* Maintain aspect ratio */
+    height: auto;             /* Ensure proper scaling */
+    margin-bottom: 20px;      /* Space between the image and content */
+    border: 1px solid #ddd;  /* Light border */
+    border-radius: 10px;     /* Rounded corners for a softer look */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);  /* Subtle shadow for depth */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition on hover */
+}
+
+.post-image:hover {
+    transform: scale(1.05);    /* Slight zoom effect on hover */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15); /* Deepen shadow on hover */
+}
+
+.post {
+    margin-bottom: 30px;   /* Add space between posts */
+    padding: 20px;         /* Increase padding for better readability */
+    background-color: #f9f9f9;  /* Light background for contrast */
+    border: 1px solid #eee;    /* Softer border color */
+    border-radius: 10px;       /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  /* Light shadow for depth */
+    transition: box-shadow 0.3s ease; /* Smooth transition on hover */
+}
+
+.post:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);  /* Deepen shadow on hover */
+}
+
+/* Optional: Ensure text is not too close to the image */
+.post h3 {
+    margin-top: 20px;   /* Add space above the header */
+    font-size: 1.5rem;   /* Slightly larger font size for headers */
+    color: #333;        /* Darker color for contrast */
+}
+
+.post p {
+    margin-top: 10px;   /* Space between paragraph and header */
+    line-height: 1.6;    /* Increase line height for readability */
+    color: #555;         /* Slightly lighter text color */
+}
+
+.post-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px; /* Add space between the buttons */
+    margin-top: 10px;
+}
+.button.like img.like-icon {
+    width: 10px;          /* Adjust width for proper scaling */
+    height: 10px;         /* Ensure height matches width */
+    object-fit: contain;  /* Maintain the image aspect ratio */
+    vertical-align: middle; /* Align icon with the text */
+}
+
+.button.delete {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
 
 @media screen and (max-width: 580px) {
   
@@ -146,5 +256,11 @@ button:hover {
     }
     ul.authors-list li a {
         font-size: 1em;
+    }
+
+    /* ドゥミさん */
+    .button.like img.like-icon {
+        width: 14px;  /* Slightly smaller icon on smaller screens */
+        height: 14px;
     }
 }

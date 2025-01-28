@@ -7,23 +7,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $post_title = $_POST['post_title'];
     $post_content = $_POST['post_content'];
     $user_id = $_SESSION['user_id'];
+    $post_image = null;
 
-    // 文字列の長さの取得(全角文字も1文字と数える場合) mb_strlen( $val, "UTF-8");
-    if ( mb_strlen( $post_title, "UTF-8") > 30){
+    // タイトルの文字数チェック
+    if (mb_strlen($post_title, "UTF-8") > 30) {
         $error = "タイトルは30文字以内で入力してください。";
     } else {
-        // post_date に現在の日時を指定して新しい投稿を挿入する
-        $stmt = $pdo->prepare("INSERT INTO posts (post_title, post_content, user_id, post_date) 
-                           VALUES (?, ?, ?, NOW())");           // prepare — SQL文の実行準備
-        $stmt->execute([$post_title, $post_content, $user_id]);     // execute — プリペアドステートメント（SQL文で値が変わる可能性がある箇所に対して、変数のように別の文字列を入れておき、後で置き換える仕組み）を実行する際に使われる関数
+        // 画像アップロードの処理
+        if (!empty($_FILES['post_image']['name'])) {
+            $uploadDir = 'uploads/'; // アップロード先のディレクトリ
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true); // ディレクトリが存在しない場合は作成
+            }
 
-        // 挿入後に投稿リストにリダイレクトする
-        header('Location:main.php');
-        exit();
+            $fileName = basename($_FILES['post_image']['name']);
+            $targetPath = $uploadDir . time() . "_" . $fileName;
+
+            // 画像ファイルの検証と保存
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            if (in_array($_FILES['post_image']['type'], $allowedTypes) && move_uploaded_file($_FILES['post_image']['tmp_name'], $targetPath)) {
+                $post_image = $targetPath;
+            } else {
+                $error = "画像のアップロードに失敗しました。";
+            }
+        }
+
+        // データベースに投稿を挿入
+        if (!isset($error)) {
+            $stmt = $pdo->prepare("INSERT INTO posts (post_title, post_content, user_id, post_date, post_image) 
+                                   VALUES (?, ?, ?, NOW(), ?)");
+            $stmt->execute([$post_title, $post_content, $user_id, $post_image]);
+
+            // 挿入後に投稿リストにリダイレクト
+            header('Location: main.php');
+            exit();
+        }
     }
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="ja">
@@ -36,39 +57,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <div class="post_container">
         <h2>新規投稿</h2>
-        <form action="create_post.php" method="POST">
+        <form action="create_post.php" method="POST" enctype="multipart/form-data">
             <?php if (!empty($error)): ?>
                 <p class="error"><?php echo htmlspecialchars($error); ?></p>
             <?php endif; ?>
 
             <label for="post_title">タイトル</label>
-            <!--placeholder - 文字制限の表示-->
-            <input type="text" name="post_title" id="post_title" placeholder="30字以内で入力してください" required>
+            <input type="text" name="post_title" id="post_title" required>
 
-            <div class="textarea">
             <label for="post_content">投稿内容</label>
-            <textarea name="post_content" id="post_content" maxlength="8192" placeholder="8192字以内で入力してください" required></textarea>
+            <textarea name="post_content" id="post_content" required></textarea>
 
-            <button type="submit">投稿</button>
-        
-            <p style="padding-top:-10px;" border: 1px solid #ccc;>
-            <button type="button" onclick="window.location.href='main.php';">メインに戻る</button></p>
+            <label for="post_image">画像を選択</label>
+            <input type="file" name="post_image" id="post_image" accept="image/*">
+
+            <button type="submit">投稿</button><br>
+            <button type="button" onclick="window.location.href='main.php';">メインに戻る</button>
         </form>
     </div>
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const form = document.querySelector("form");                 //要素の取得
-            const postTitle = document.getElementById("post_title");
-            const postContent = document.getElementById("post_content");
-            form.addEventListener("submit", (e) => {
-                const title = postTitle.value.trim();
-                const content = postContent.value.trim();
-                if (title === "" || content === "") { //空白と改行の場合に表示
-                    e.preventDefault();
-                    alert("タイトルと投稿内容を入力してください。（スペースや改行のみは無効です）"); //アラートで表示
-                }
-            });
+    document.addEventListener("DOMContentLoaded", () => {
+        const form = document.querySelector("form");
+        const postTitle = document.getElementById("post_title");
+        const postContent = document.getElementById("post_content");
+        form.addEventListener("submit", (e) => {
+            const title = postTitle.value.trim();
+            const content = postContent.value.trim();
+            if (title === "" || content === "") {
+                e.preventDefault();
+                alert("タイトルと投稿内容を入力してください。（スペースや改行のみは無効です）");
+            }
         });
+    });
     </script>
 </body>
 </html>
