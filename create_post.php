@@ -2,6 +2,13 @@
 session_start();
 require 'db_config.php';
 
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    // Redirect to login page if not logged in
+    header('Location: login.php');
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // フォームから投稿データを取得する
     $post_title = $_POST['post_title'];
@@ -34,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // データベースに投稿を挿入
         if (!isset($error)) {
-            $stmt = $pdo->prepare("INSERT INTO posts (post_title, post_content, user_id, post_date, post_image) 
+            $stmt = $pdo->prepare("INSERT INTO posts (post_title, post_content, user_id, post_date, post_img) 
                                    VALUES (?, ?, ?, NOW(), ?)");
             $stmt->execute([$post_title, $post_content, $user_id, $post_image]);
 

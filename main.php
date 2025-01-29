@@ -2,25 +2,45 @@
 session_start();
 require 'db_config.php';
 
-// Redirect to login if not logged in
+// Redirect to login if not logged in ログインしていない場合はログインにリダイレクト
 if (!isset($_SESSION['user_id'])) {
     header('Location: index.php');
     exit();
 }
 
-// Fetch posts with like and comment counts
+// Handle comment submission コメントの送信を処理
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_content']) && isset($_POST['comment_post_id'])) {
+    $comment_content = trim($_POST['comment_content']);
+    $post_id = $_POST['comment_post_id'];
+    $user_id = $_SESSION['user_id'];
+
+    // Insert comment into database データベースにコメントを挿入
+    $stmt = $pdo->prepare("INSERT INTO comments (user_id, post_id, comment_content, comment_date) 
+                           VALUES (:user_id, :post_id, :comment_content, NOW())");
+    $stmt->execute([
+        'user_id' => $user_id,
+        'post_id' => $post_id,
+        'comment_content' => $comment_content
+    ]);
+
+    // Redirect to the same page to prevent re-posting if page is refreshed ページが更新された場合に再投稿を防ぐために同じページにリダイレクト
+    header("Location: {$_SERVER['PHP_SELF']}");
+    exit();
+}
+
+// Fetch posts with like and comment counts いいね数とコメント数を含む投稿を取得
 $stmt = $pdo->prepare("
     SELECT posts.*, users.user_name, users.user_img, 
            (SELECT COUNT(*) FROM likes WHERE likes.post_id = posts.post_id) AS like_count,
            (SELECT COUNT(*) FROM comments WHERE comments.post_id = posts.post_id) AS comment_count
     FROM posts 
     JOIN users ON posts.user_id = users.user_id 
-    ORDER BY posts.post_date DESC
+    ORDER BY like_count DESC, posts.post_date DESC
 ");
 $stmt->execute();
 $posts = $stmt->fetchAll();
 
-// Fetch comments for each post
+// Fetch comments for each post 各投稿のコメントを取得
 $commentsByPost = [];
 $stmt = $pdo->prepare("SELECT comments.*, users.user_name FROM comments JOIN users ON comments.user_id = users.user_id WHERE post_id = :post_id ORDER BY comment_date ASC");
 foreach ($posts as $post) {
@@ -37,7 +57,6 @@ foreach ($posts as $post) {
     <link rel="stylesheet" href="styles.css">
     <title>投稿一覧</title>
     <style>
-        /* Updated CSS to fix button layout */
         .author-info {
             display: flex;
             align-items: center;
@@ -62,13 +81,35 @@ foreach ($posts as $post) {
         }
     </style>
     <script>
-        function confirmDelete() {
-            return confirm('本当に削除しますか?');
-        }
+        function likePost(postId) {
+    const likeButton = document.getElementById('like-button-' + postId);
+    const likeCountSpan = document.getElementById('like-count-' + postId);
 
+    // Send AJAX request to like/unlike the post リクエストを送信して投稿にいいねを付ける
+    fetch('like_post.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: 'post_id=' + postId
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Update the button and like count dynamically ボタンといいね数を動的に更新
+        if (data.liked) {
+            likeButton.innerHTML = '👍';  // Liked state
+        } else {
+            likeButton.innerHTML = '👍🏼'; // Unliked state
+        }
+        likeCountSpan.textContent = data.likeCount + " Likes";
+    })
+    .catch(error => console.error('Error:', error));
+    }
+
+        // Function to toggle the visibility of comments コメントの表示/非表示を切り替える
         function toggleComments(postId) {
             const commentsSection = document.getElementById('comments-' + postId);
-            commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
+            commentsSection.style.display = (commentsSection.style.display === 'none' || commentsSection.style.display === '') ? 'block' : 'none';
         }
     </script>
 </head>
@@ -79,6 +120,7 @@ foreach ($posts as $post) {
         <div class="actions">
             <a href="create_post.php" class="button">新規投稿</a>
             <a href="authors_list.php" class="button">投稿者一覧</a>
+            <a href="user_info.php" class="button">ユーザー情報</a>
             <a href="logout.php" class="button logout">ログアウト</a>
         </div>
         <?php if (count($posts) > 0): ?>
@@ -105,7 +147,7 @@ foreach ($posts as $post) {
                                 <a href="edit_post.php?post_id=<?php echo $post['post_id']; ?>" class="button update">更新</a>
                                 <a href="delete_post.php?post_id=<?php echo $post['post_id']; ?>" 
                                    class="button delete" 
-                                   onclick="return confirmDelete();">削除</a>
+                                   onclick="return confirm('本当に削除しますか?');">削除</a>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -115,21 +157,13 @@ foreach ($posts as $post) {
                     <p><small>投稿日時: <?php echo $post['post_date']; ?></small></p>
 
                     <!-- Display Like Button and Count -->
-                    <?php
-                    $stmt = $pdo->prepare("SELECT * FROM likes WHERE post_id = :post_id AND user_id = :user_id");
-                    $stmt->execute(['post_id' => $post['post_id'], 'user_id' => $_SESSION['user_id']]);
-                    $liked = $stmt->fetch();
-                    ?>
-                    <form action="" method="POST" style="display:inline;">
-                        <input type="hidden" name="like_post_id" value="<?php echo $post['post_id']; ?>">
-                        <button type="submit" class="button like">
-                            <span class="like-icon">
-                                <?php echo $liked ? '👍' : '👍🏼'; ?>
-                            </span>
-                            Like
-                        </button>
-                    </form>
-                    <span class="like-count"><?php echo $post['like_count']; ?> Likes</span>
+                    <button id="like-button-<?php echo $post['post_id']; ?>" class="button like" onclick="likePost(<?php echo $post['post_id']; ?>)">
+                        <span class="like-icon">
+                            <?php echo $post['like_count'] > 0 ? '👍' : '👍🏼'; ?>
+                        </span>
+                        Like
+                    </button>
+                    <span id="like-count-<?php echo $post['post_id']; ?>" class="like-count"><?php echo $post['like_count']; ?> Likes</span>
 
                     <!-- Comment Button -->
                     <button class="button comment" onclick="toggleComments(<?php echo $post['post_id']; ?>)">
